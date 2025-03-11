@@ -1,4 +1,4 @@
-version: '3.1.1'
+
 
 volumes:
     prometheus_data: {}
@@ -82,3 +82,18 @@ services:
       - HAV-my-netology-hw-back
       - HAV-my-netology-hw-front
     restart: always
+
+
+
+  alertmanager:
+    image: prom/alertmanager
+    ports:
+      - 9093:9093
+    volumes:
+      - ./alertmanager/:/etc/alertmanager/
+    networks:
+      - HAV-my-netology-hw-back
+    restart: always
+    command:
+      - '--config.file=/etc/alertmanager/config.yml'
+      - '--storage.path=/alertmanager'

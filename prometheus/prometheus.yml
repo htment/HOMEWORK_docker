@@ -31,3 +31,8 @@ scrape_configs:
     honor_labels: true
     static_configs:
       - targets: ["pushgateway:9091"]
+      
+  - job_name: 'alertmanager'
+    honor_labels: true
+    static_configs:
+      - targets: ["pushgateway:9093"]
