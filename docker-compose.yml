@@ -1,0 +1,84 @@
+version: '3.1.1'
+
+volumes:
+    prometheus_data: {}
+    grafana_data: {}
+
+networks:
+  HAV-my-netology-hw-front:
+  HAV-my-netology-hw-back:
+    ipam:
+      driver: default
+      config:
+        - subnet: 10.5.0.0/16
+
+services:
+
+
+  node-exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    volumes:
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /:/rootfs:ro,rslave
+      - /:/host:ro,rslave   # Ensure using 'rslave' for /host mount
+    command: 
+      - '--path.rootfs=/host'
+      - '--path.procfs=/host/proc'
+      - '--path.sysfs=/host/sys'
+      - --collector.filesystem.ignored-mount-points
+      - "^/(sys|proc|dev|host|etc|rootfs/var/lib/docker/containers|rootfs/var/lib/docker/overlay2|rootfs/run/docker/netns|rootfs/var/lib/docker/aufs)($$|/)"
+    ports:
+      - 9100:9100
+    networks:
+      - HAV-my-netology-hw-back
+    restart: always
+    deploy:
+      mode: global
+
+  prometheus:
+   # image: prom/prometheus:v2.36.2
+    image: prom/prometheus
+    volumes:
+      - ./prometheus/:/etc/prometheus/  # Только конфигурация
+      - prometheus_data:/prometheus     # Используем именованный том для данных.
+      - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+    ports:
+      - 9090:9090
+    networks:
+      HAV-my-netology-hw-back:
+        ipv4_address: 10.5.0.10
+    restart: always
+
+  pushgateway:
+    image: prom/pushgateway
+    restart: always
+    expose:
+      - 9091
+    ports:
+      - "9091:9091"
+    networks:
+      - HAV-my-netology-hw-back
+
+  grafana:
+    image: grafana/grafana
+   # user: "art"
+    depends_on:
+      - prometheus
+    ports:
+      - 3000:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning/:/etc/grafana/provisioning/
+      - ./grafana/config.monitoring:/etc/grafana/grafana.ini
+   # env_file:
+    #  - ./grafana/config.monitoring
+    networks:
+      - HAV-my-netology-hw-back
+      - HAV-my-netology-hw-front
+    restart: always
