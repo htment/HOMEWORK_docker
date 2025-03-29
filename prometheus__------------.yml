@@ -1,0 +1,46 @@
+global:
+  scrape_interval:     15s  # Интервал сбора метрик (15 секунд)
+  evaluation_interval: 15s  # Интервал оценки правил (15 секунд)
+  scrape_timeout:       10s  # Таймаут запроса (10 секунд)
+
+# Конфигурация Alertmanager
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093 # Используем имя сервиса из docker-compose.yml
+
+# Файлы с правилами оповещений
+rule_files:
+  - alert_rules.yml # Файл с правилами (создайте его отдельно)
+
+scrape_configs:
+  # Конфигурация для Node Exporter
+  - job_name: 'node'
+    static_configs:
+      - targets: ['node-exporter:9100'] # Используем имя сервиса из docker-compose.yml
+
+  # Конфигурация для Pushgateway
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets: ['pushgateway:9091'] # Используем имя сервиса из docker-compose.yml
+
+  # Пример конфигурации для Blackbox Exporter (проверка доступности)
+  - job_name: 'blackbox'
+    static_configs:
+      - targets:
+          - http://example.com # Замените на ваши целевые URL
+          - https://example.org # Замените на ваши целевые URL
+    metrics_path: '/probe'
+    params:
+      target: '{{ $target }}'
+    relabel_configs:
+      - sourceLabels: [__address__]
+        targetLabel: instance
+      - sourceLabels: [target]
+        targetLabel: instance
+
+  # Добавьте здесь конфигурации для других ваших экспортеров (например, MySQL, PostgreSQL, и т.д.)
+
+

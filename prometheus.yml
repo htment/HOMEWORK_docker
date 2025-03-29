@@ -1,0 +1,36 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+            - alertmanager:9093 # Используем имя сервиса
+
+rule_files:
+  - alert_rules.yml
+
+scrape_configs:
+  - job_name: "node"
+    static_configs:
+      - targets: ["node-exporter:9100"] # Используем имя сервиса
+
+  - job_name: "pushgateway"
+    honor_labels: true
+    static_configs:
+      - targets: ["pushgateway:9091"] # Используем имя сервиса
+
+  - job_name: "alertmanager"
+    honor_labels: true
+    static_configs:
+      - targets: ["alertmanager:9093"] # Используем имя сервиса
+
+  - job_name: 'process-exporter'
+
+    # Override the global default and scrape targets from this job every 5 seconds.
+    scrape_interval: 15s
+  
+    static_configs:
+      - targets: ['process-exporter:9256']
+
