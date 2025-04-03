@@ -27,49 +27,52 @@ scrape_configs:
     static_configs:
      - targets: ["192.168.31.115:9100"]
 
-  - job_name: "OLD_book"
+  - job_name: "node_exporter_OLD_book"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
      - targets: ["192.168.31.112:9100"]
 
+  - job_name: "process_exporter_OLD_book"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.112:9256"]
 
-  - job_name: "192.168.31.44"
+
+  - job_name: "node_exporter_192.168.31.44"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
      - targets: ["192.168.31.44:9100"]
 
-  - job_name: "192.168.31.150"
+  - job_name: "process_exporter_192.168.31.150"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
      - targets: ["192.168.31.150:9100"]
 
-  - job_name: "192.168.31.125"
+  - job_name: "node_exporter_192.168.31.125"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
      - targets: ["192.168.31.125:9100"]
 
-  - job_name: "192.168.31.115"
+  - job_name: "node_exporter_192.168.31.115"
     # metrics_path defaults to '/metrics'
     # scheme defaults to 'http'.
     static_configs:
      - targets: ["192.168.31.115:9100"]
 
-
-  - job_name: 'process_exporter'
-    honor_labels: true
-    static_configs:
-      - targets: ["192.168.31.116:9256"]
-
-  - job_name: 'nod_exporter_192.168.31.116'
+  - job_name: 'node_exporter_192.168.31.116'
     honor_labels: true
     static_configs:
       - targets: ["192.168.31.116:9100"]
 
-
+  - job_name: 'procecc_exporer_192.168.31.116'
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.116:9256"]
 
   - job_name: 'pushgateway'
     honor_labels: true
@@ -80,3 +83,18 @@ scrape_configs:
     honor_labels: true
     static_configs:
       - targets: ["alertmanager:9093"]
+  
+  - job_name: 'blackbox'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://www.dmosk.ru
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
