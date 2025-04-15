@@ -1,0 +1,24 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Ping remote hosts
+      ping:
+    - name: Get disk space usage
+      command: df -h
+      register: df_output
+    - name: Print df -h output
+      debug:
+        var: df_output.stdout_lines
+      become: yes
+    - name: Install prometheus-node-exporter
+      apt:
+        name: prometheus-node-exporter
+        state: present
+        update_cache: yes
+      become: yes
+    - name: Install mc
+      tags:
+        - mc
+      apt:
+        name: mc
+      become: yes

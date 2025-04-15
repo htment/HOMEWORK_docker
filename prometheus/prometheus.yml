@@ -84,7 +84,7 @@ scrape_configs:
     static_configs:
       - targets: ["alertmanager:9093"]
   
-  - job_name: 'blackbox'
+  - job_name: 'blackbox_dmosk'
     metrics_path: /probe
     params:
       module: [http_2xx]
@@ -98,3 +98,36 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 192.168.31.115:9115
+
+
+  - job_name: 'blackbox_ya'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://www.ya.ru
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+  - job_name: 'blackbox_31.125'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.125
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
