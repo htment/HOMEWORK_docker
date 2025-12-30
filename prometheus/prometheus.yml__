@@ -1,0 +1,392 @@
+# my global config
+global:
+  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
+  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
+  # scrape_timeout is set to the global default (10s).
+
+# Alertmanager configuration
+alerting:
+  alertmanagers:
+    - static_configs:
+        - targets:
+             - alertmanager:9093
+
+# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+rule_files:
+  # - "first_rules.yml"
+  # - "second_rules.yml"
+  - alert_rules.yml
+
+# A scrape configuration containing exactly one endpoint to scrape:
+# Here it's Prometheus itself.
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: "docker-server_export"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.115:9100"]
+
+  #- job_name: "node_exporter_OLD_book_192.168.31.112"
+  - job_name: "node_exporter_192.168.31.112"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.112:9100"]
+#    relabel_configs:
+#     - target_label: job
+#       replacement: "node"  # Добавляет стандартный label
+
+  - job_name: "node_exporter_192.168.31.119"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.119:9100"]
+
+
+  - job_name: "process_exporter_PackardBell_192.168.31.119"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.119:9256"]
+
+
+
+  - job_name: "process_exporter_OLD_book_192.168.31.112"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.112:9256"]
+
+
+  - job_name: "node_exporter_192.168.31.44"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.44:9100"]
+
+  - job_name: "process_exporter_192.168.31.150"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.150:9100"]
+
+  - job_name: "node_exporter_192.168.31.115"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.115:9100"]
+
+  - job_name: 'node_exporter_192.168.31.116'
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.116:9100"]
+
+  - job_name: 'procecc_exporer_192.168.31.116'
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.116:9256"]
+
+  - job_name: 'pushgateway'
+    honor_labels: true
+    static_configs:
+      - targets: ["pushgateway:9091"]
+
+  - job_name: 'alertmanager'
+    honor_labels: true
+    static_configs:
+      - targets: ["alertmanager:9093"]
+
+  - job_name: '192.168.31.44_smart'
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.44:9902"]
+
+  - job_name: "nSMART_exporter_192.168.31.44"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.44:9902"]
+
+  - job_name: "process_exporter_192.168.31.44"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.44:9256"]
+
+
+################################################################################
+  - job_name: '192.168.31.127_MINT2'
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.127:9902"]
+
+  - job_name: "nSMART_exporter_192.168.31.127_MINT2"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.127:9902"]
+
+  - job_name: "process_exporter_192.168.31.127_MINT2"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.127:9256"]
+
+  - job_name: "node_exporter_192.168.31.127"
+    # metrics_path defaults to '/metrics'
+    # scheme defaults to 'http'.
+    static_configs:
+     - targets: ["192.168.31.127:9100"]
+
+#####################################################################################
+
+
+
+  - job_name: 'blackbox_dmosk'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://www.dmosk.ru
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+  - job_name: 'blackbox_ya'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - https://www.ya.ru
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+
+
+  - job_name: 'blackbox_31.1'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+  - job_name: 'blackbox_31.44'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.44:9100/metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+
+
+  - job_name: 'blackbox_31.119'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.119:9100/metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+  - job_name: 'windowsSERVER'
+    scrape_interval: 15s
+    static_configs:
+      - targets:
+          - '192.168.31.8:9182'
+
+
+
+  - job_name: 'blackbox_31.150'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.150:9100/metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+  - job_name: 'blackbox_31.115'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.115
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+
+  - job_name: 'blackbox_ping_8.8.8.8'
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Используем модуль icmp для проверки ping
+    static_configs:
+      - targets:
+        - 8.8.8.8  # Целевой IP-адрес
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115  # Адрес Blackbox Exporter
+
+
+  - job_name: 'blackbox_ping_10.13.14.1'
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets:
+        - 10.13.14.1
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+      # Добавляем кастомные метки
+      - target_label: res_type
+        replacement: "Шлюз провайдера"
+
+
+
+  - job_name: 'blackbox_ping_192.168.31.120'
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Используем модуль icmp для проверки ping
+    static_configs:
+      - targets:
+        - 192.168.31.120  # Целевой IP-адрес
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115  # Адрес Blackbox Exporter
+      - target_label: res_type
+        replacement: "Камера на входе"
+
+
+  - job_name: 'blakbox_windows_ping'
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Используем модуль icmp для проверки ping
+    static_configs:
+      - targets:
+        - 192.168.31.8  # Целевой IP-адрес
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115  # Адрес Blackbox Exporter
+      - target_label: res_type
+        replacement: "Гиппервизор"
+
+  - job_name: 'blackbox_ping_192.168.31.10'
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Используем модуль icmp для проверки ping
+    static_configs:
+      - targets:
+        - 192.168.31.10  # Целевой IP-адрес
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115  # Адрес Blackbox Exporter
+      - target_label: res_type
+        replacement: "DNS - сервер"
+
+
+
+
+
+  - job_name: 'blackbox_ping_192.168.31.127'
+    metrics_path: /probe
+    params:
+      module: [icmp]  # Используем модуль icmp для проверки ping
+    static_configs:
+      - targets:
+        - 192.168.31.127  # Целевой IP-адрес
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115  # Адрес Blackbox Exporter
+      - target_label: res_type
+        replacement: "MINT2"
+
+
+
+  - job_name: 'blackbox_31.127'
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.127/metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115

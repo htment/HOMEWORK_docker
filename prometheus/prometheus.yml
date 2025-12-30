@@ -1,112 +1,147 @@
-# my global config
+# Глобальные настройки
 global:
-  scrape_interval: 15s # Set the scrape interval to every 15 seconds. Default is every 1 minute.
-  evaluation_interval: 15s # Evaluate rules every 15 seconds. The default is every 1 minute.
-  # scrape_timeout is set to the global default (10s).
+  scrape_interval: 15s      # Интервал сбора метрик - каждые 15 секунд
+  evaluation_interval: 15s  # Интервал оценки правил - каждые 15 секунд
 
-# Alertmanager configuration
+# Настройки Alertmanager
 alerting:
   alertmanagers:
     - static_configs:
         - targets:
-             - alertmanager:9093
+            - alertmanager:9093
 
-# Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
+# Файлы с правилами алертов
 rule_files:
-  # - "first_rules.yml"
-  # - "second_rules.yml"
   - alert_rules.yml
 
-# A scrape configuration containing exactly one endpoint to scrape:
-# Here it's Prometheus itself.
+# Конфигурации сбора метрик
 scrape_configs:
-  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
-  - job_name: "docker-server_export"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    static_configs:
-     - targets: ["192.168.31.115:9100"]
 
-  - job_name: "node_exporter_OLD_book"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
+  # ==================== NODE EXPORTERS ====================
+  # Сбор метрик с серверов через Node Exporter
+  
+  - job_name: "node_exporter_192.168.31.112"
     static_configs:
-     - targets: ["192.168.31.112:9100"]
-
-  - job_name: "process_exporter_OLD_book"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    static_configs:
-     - targets: ["192.168.31.112:9256"]
-
-
-  - job_name: "node_exporter_192.168.31.44"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    static_configs:
-     - targets: ["192.168.31.44:9100"]
-
-  - job_name: "process_exporter_192.168.31.150"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    static_configs:
-     - targets: ["192.168.31.150:9100"]
-
-  - job_name: "node_exporter_192.168.31.125"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
-    static_configs:
-     - targets: ["192.168.31.125:9100"]
+      - targets: ["192.168.31.112:9100"]
 
   - job_name: "node_exporter_192.168.31.115"
-    # metrics_path defaults to '/metrics'
-    # scheme defaults to 'http'.
     static_configs:
-     - targets: ["192.168.31.115:9100"]
+      - targets: ["192.168.31.115:9100"]
 
-  - job_name: 'node_exporter_192.168.31.116'
+  - job_name: "node_exporter_192.168.31.116"
     honor_labels: true
     static_configs:
       - targets: ["192.168.31.116:9100"]
 
-  - job_name: 'procecc_exporer_192.168.31.116'
+  - job_name: "node_exporter_192.168.31.119"
+    static_configs:
+      - targets: ["192.168.31.119:9100"]
+
+#  - job_name: "node_exporter_192.168.31.127"
+#    static_configs:
+#      - targets: ["192.168.31.127:9100"]
+
+  - job_name: "node_exporter_192.168.31.44"
+    static_configs:
+      - targets: ["192.168.31.44:9100"]
+
+  # - job_name: "node_exporter_192.168.31.150"
+  #   static_configs:
+  #     - targets: ["192.168.31.150:9100"]
+
+  - job_name: "node_exporter_192.168.31.127"
+    static_configs:
+      - targets: ["192.168.31.127:9100"]
+
+  - job_name: "node_exporter_192.168.31.131"
+    static_configs:
+      - targets: ["192.168.31.131:9100"]
+
+  # ==================== PROCESS EXPORTERS ====================
+  # Сбор метрик о процессах через Process Exporter
+  
+  - job_name: "process_exporter_192.168.31.112"
+    static_configs:
+      - targets: ["192.168.31.112:9256"]
+
+  - job_name: "process_exporter_192.168.31.116"
     honor_labels: true
     static_configs:
       - targets: ["192.168.31.116:9256"]
 
-  - job_name: 'pushgateway'
+  - job_name: "process_exporter_192.168.31.119"
+    static_configs:
+      - targets: ["192.168.31.119:9256"]
+
+  - job_name: "process_exporter_192.168.31.131"
+    static_configs:
+      - targets: ["192.168.31.131:9256"]
+  # - job_name: "process_exporter_192.168.31.150"
+  #   static_configs:
+  #     - targets: ["192.168.31.150:9256"]
+    
+  
+#  - job_name: "process_exporter_192.168.31.127"
+#    static_configs:
+#      - targets: ["192.168.31.127:9256"]
+
+  - job_name: "process_exporter_192.168.31.44"
+    static_configs:
+      - targets: ["192.168.31.44:9256"]
+
+  - job_name: "process_exporter_192.168.31.127"
+    static_configs:
+      - targets: ["192.168.31.44:9256"]
+
+
+  # ==================== SMART EXPORTERS ====================
+  # Сбор SMART метрик с дисков
+  
+  - job_name: "smart_exporter_192.168.31.44"
+    honor_labels: true
+    static_configs:
+      - targets: ["192.168.31.44:9902"]
+
+#  - job_name: "smart_exporter_192.168.31.127"
+#    honor_labels: true
+#    static_configs:
+#      - targets: ["192.168.31.127:9902"]
+
+  # ==================== WINDOWS SERVER ====================
+  # Сбор метрик с Windows сервера
+  
+  - job_name: "windows_server"
+    scrape_interval: 15s
+    static_configs:
+      - targets: ["192.168.31.8:9182"]
+
+  # ==================== INTERNAL SERVICES ====================
+  # Мониторинг внутренних сервисов Prometheus
+  
+  - job_name: "pushgateway"
     honor_labels: true
     static_configs:
       - targets: ["pushgateway:9091"]
-      
-  - job_name: 'alertmanager'
+
+  - job_name: "alertmanager"
     honor_labels: true
     static_configs:
       - targets: ["alertmanager:9093"]
+
+  # ==================== BLACKBOX HTTP CHECKS ====================
+  # Проверки доступности HTTP/HTTPS сервисов
   
-  - job_name: 'blackbox_dmosk'
+  - job_name: "blackbox_http_external"
     metrics_path: /probe
     params:
       module: [http_2xx]
     static_configs:
       - targets:
         - https://www.dmosk.ru
-    relabel_configs:
-      - source_labels: [__address__]
-        target_label: __param_target
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 192.168.31.115:9115
-
-
-  - job_name: 'blackbox_ya'
-    metrics_path: /probe
-    params:
-      module: [http_2xx]
-    static_configs:
       - targets:
         - https://www.ya.ru
+        labels:
+          res_type: 'Яндекс'
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -116,13 +151,16 @@ scrape_configs:
         replacement: 192.168.31.115:9115
 
 
-  - job_name: 'blackbox_31.125'
+
+
+  - job_name: "blackbox_http_internal"
     metrics_path: /probe
     params:
       module: [http_2xx]
     static_configs:
       - targets:
-        - http://192.168.31.125
+        - http://192.168.31.1
+        - http://192.168.31.115
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -131,3 +169,94 @@ scrape_configs:
       - target_label: __address__
         replacement: 192.168.31.115:9115
 
+  - job_name: "blackbox_http_metrics"
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+        - http://192.168.31.44:9100/metrics
+        - http://192.168.31.119:9100/metrics
+        #- http://192.168.31.150:9100/metrics
+        - http://192.168.31.127:9100/metrics
+        - http://192.168.31.131:9100/metrics
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+  # ==================== BLACKBOX ICMP CHECKS ====================
+  # Проверки доступности через ping (ICMP)
+  
+  - job_name: "blackbox_icmp_critical"
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    static_configs:
+      - targets:
+        #- 8.8.8.8
+        #- 10.13.14.1
+        #- 192.168.31.8
+        #- 192.168.31.10
+        #- 192.168.31.127
+        labels:
+          res_type: 'Не задано'  # значение по умолчанию
+      - targets: ['8.8.8.8']
+        labels:
+          res_type: 'GOOGLE DNS'
+      - targets: ['10.13.14.1']
+        labels:
+          res_type: 'Шлюз провайдера'
+#      - targets: ['192.168.31.127']
+#        labels:
+#          res_type: 'MINTT2'
+      - targets: ['192.168.31.10']
+        labels:
+          res_type: 'Windows server'
+      - targets: ['192.168.31.120']
+        labels:
+          res_type: 'Камера на входе'
+      - targets: ['192.168.31.119']
+        labels:
+          res_type: 'Балкон'
+      - targets: ['192.168.31.151']
+        labels:
+          res_type: 'Камера в шкафу'
+      - targets: ['192.168.31.8']
+        labels:
+          res_type: 'SERVER'
+      - targets: ['192.168.31.131']
+        labels:
+          res_type: 'BASTION'
+
+
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 192.168.31.115:9115
+
+
+  # - job_name: "blackbox_icmp_infrastructure"
+  #   metrics_path: /probe
+  #   params:
+  #     module: [icmp]
+  #   static_configs:
+  #     - targets:
+  #       - 192.168.31.120            # Камера на входеTTTTTTT
+  #   relabel_configs:
+  #     - source_labels: [__address__]
+  #       target_label: __param_target
+  #     - source_labels: [__param_target]
+  #       target_label: instance
+  #     - target_label: __address__
+  #       replacement: 192.168.31.115:9115
+  #     - source_labels: [__param_target]
+  #       target_label: res_type
+  #       regex: '(.*)'
+  #       replacement: ''

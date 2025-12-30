@@ -1,10 +1,14 @@
-route:
-  receiver: 'slack'
+global:
+  resolve_timeout: 5m
 
 receivers:
-  - name: 'slack'
-#       slack_configs:
-#           - send_resolved: true
-#             username: '<username>'
-#             channel: '#<channel-name>'
-#             api_url: '<incomming-webhook-url>'
+- name: 'default-receiver'
+  webhook_configs:
+  - url: 'http://localhost:9093/-/receive'  # Это заглушка, можно заменить на реальный webhook
+
+route:
+  group_by: ['alertname']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 1h
+  receiver: 'default-receiver'
