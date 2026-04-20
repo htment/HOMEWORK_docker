@@ -1,5 +1,4 @@
 
-
 volumes:
     prometheus_data: {}
     grafana_data: {}
@@ -41,7 +40,8 @@ services:
     image: prom/prometheus:v2.36.2
     volumes:
       - ./prometheus/:/etc/prometheus/  # Только конфигурация
-      - prometheus_data:/prometheus     # Используем именованный том для данных.
+#      - prometheus_data:/prometheus     # Используем именованный том для данных.
+      - ./grafana/prometheus_data:/prometheus:Z
       - ./prometheus/alert_rules.yml:/etc/prometheus/alert_rules.yml
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
